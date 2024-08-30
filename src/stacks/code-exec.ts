@@ -2,6 +2,7 @@ import { CfnOutput, Duration, Stack, type StackProps } from 'aws-cdk-lib';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as efs from 'aws-cdk-lib/aws-efs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -15,13 +16,14 @@ type Props = StackProps & {
   clusterName: string;
   serviceName: string;
   serviceSG: string;
-  image: string;
   fileSystemId: string;
   fileSystemSG: string;
   certificateArn: string;
+  repo: string;
+  tag: string;
 };
 
-export class Vaultwarden extends Stack {
+export class CodeExec extends Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
@@ -70,20 +72,22 @@ export class Vaultwarden extends Stack {
     });
 
     const logging = new ecs.AwsLogDriver({
-      streamPrefix: 'vaultwarden',
+      streamPrefix: 'codeexec',
     });
 
+    const repo = ecr.Repository.fromRepositoryName(this, 'ECRRepo', props.repo);
+
     const containerDefinition = new ecs.ContainerDefinition(this, 'ContainerDefinition', {
-      image: ecs.ContainerImage.fromRegistry(props.image),
+      image: ecs.ContainerImage.fromEcrRepository(repo, props.tag),
       taskDefinition,
       environment: {
-        ADMIN_TOKEN: process.env.VW_ADMIN_TOKEN ?? '',
+        API_KEY: process.env.CE_API_TOKEN ?? '',
       },
       logging,
-      portMappings: [{ containerPort: 80 }],
+      portMappings: [{ containerPort: 2000 }],
     });
     containerDefinition.addMountPoints({
-      containerPath: '/data',
+      containerPath: '/piston',
       sourceVolume: 'efs',
       readOnly: false,
     });
@@ -92,7 +96,6 @@ export class Vaultwarden extends Stack {
       cluster,
       taskDefinition,
       serviceName: props.serviceName,
-      desiredCount: 1,
       assignPublicIp: true,
       publicLoadBalancer: true,
       listenerPort: 80,
@@ -119,7 +122,7 @@ export class Vaultwarden extends Stack {
     fileSystem.connections.allowDefaultPortFrom(fargateService.service.connections);
     fileSystem.connections.allowDefaultPortTo(fargateService.service.connections);
 
-    const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 2 });
+    const scaling = fargateService.service.autoScaleTaskCount({ maxCapacity: 5 });
     scaling.scaleOnCpuUtilization('CpuScaling', {
       targetUtilizationPercent: 70,
       scaleInCooldown: Duration.seconds(60),
