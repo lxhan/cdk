@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { App } from 'aws-cdk-lib';
 import { Vaultwarden } from '@/stacks/vaultwarden';
 import type { EnvConfig } from '@/types';
+import { App } from 'aws-cdk-lib';
 import { getEnvVarOrThrow } from './utils';
 
 const app = new App();
