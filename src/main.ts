@@ -46,7 +46,7 @@ new CodeExec(app, 'code-exec', {
   fileSystemId: CE_FILE_SYSTEM_ID,
   fileSystemSG: FILE_SYSTEM_SG,
   repo: 'codeexec',
-  tag: 'v2',
+  tag: 'v3',
   serviceName: 'codeexec-service',
   serviceSG: SERVICE_SG,
   taskCpu: 256,
