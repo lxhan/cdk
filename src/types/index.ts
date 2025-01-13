@@ -6,4 +6,7 @@ export type EnvConfig = {
   CERTIFICATE_ARN: string;
   VW_FILE_SYSTEM_ID: string;
   CE_FILE_SYSTEM_ID: string;
+  RW_FILE_SYSTEM_ID: string;
+  RW_JWT_SECRET: string;
+  RW_DB_PATH: string;
 };

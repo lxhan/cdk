@@ -4,6 +4,7 @@ import { CodeExec } from '@/stacks/code-exec';
 import type { EnvConfig } from '@/types';
 import { App } from 'aws-cdk-lib';
 import { getEnvVarOrThrow } from '@/utils';
+import { RealWorld } from './stacks/realworld';
 
 const app = new App();
 
@@ -15,6 +16,9 @@ const {
   CERTIFICATE_ARN,
   VW_FILE_SYSTEM_ID,
   CE_FILE_SYSTEM_ID,
+  RW_FILE_SYSTEM_ID,
+  RW_JWT_SECRET,
+  RW_DB_PATH,
 }: EnvConfig = {
   AWS_ACCOUNT_ID: getEnvVarOrThrow('AWS_ACCOUNT_ID'),
   AWS_REGION: getEnvVarOrThrow('AWS_REGION'),
@@ -23,6 +27,9 @@ const {
   CERTIFICATE_ARN: getEnvVarOrThrow('CERTIFICATE_ARN'),
   VW_FILE_SYSTEM_ID: getEnvVarOrThrow('VW_FILE_SYSTEM_ID'),
   CE_FILE_SYSTEM_ID: getEnvVarOrThrow('CE_FILE_SYSTEM_ID'),
+  RW_FILE_SYSTEM_ID: getEnvVarOrThrow('RW_FILE_SYSTEM_ID'),
+  RW_JWT_SECRET: getEnvVarOrThrow('RW_JWT_SECRET'),
+  RW_DB_PATH: getEnvVarOrThrow('RW_DB_PATH'),
 };
 
 new Vaultwarden(app, 'vaultwarden', {
@@ -52,6 +59,26 @@ new CodeExec(app, 'code-exec', {
   taskCpu: 256,
   taskMemory: 512,
   certificateArn: CERTIFICATE_ARN,
+  env: {
+    account: AWS_ACCOUNT_ID,
+    region: AWS_REGION,
+  },
+});
+
+new RealWorld(app, 'realworld', {
+  clusterName: 'realworld-cluster',
+  fileSystemId: RW_FILE_SYSTEM_ID,
+  fileSystemSG: FILE_SYSTEM_SG,
+  serviceName: 'realworld-service',
+  serviceSG: SERVICE_SG,
+  taskCpu: 256,
+  taskMemory: 512,
+  certificateArn: CERTIFICATE_ARN,
+  repo: 'realworld',
+  tag: 'v2',
+  jwtSecret: RW_JWT_SECRET,
+  port: 8000,
+  dbPath: RW_DB_PATH,
   env: {
     account: AWS_ACCOUNT_ID,
     region: AWS_REGION,
