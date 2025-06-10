@@ -1,8 +1,8 @@
 import { CfnOutput, Duration, Stack, type StackProps } from 'aws-cdk-lib';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as efs from 'aws-cdk-lib/aws-efs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';

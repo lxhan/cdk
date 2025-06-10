@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { Vaultwarden } from '@/stacks/vaultwarden';
 import { CodeExec } from '@/stacks/code-exec';
+import { RealWorld } from '@/stacks/realworld';
+import { Vaultwarden } from '@/stacks/vaultwarden';
 import type { EnvConfig } from '@/types';
-import { App } from 'aws-cdk-lib';
 import { getEnvVarOrThrow } from '@/utils';
-import { RealWorld } from './stacks/realworld';
+import { App } from 'aws-cdk-lib';
 
 const app = new App();
 
@@ -75,7 +75,7 @@ new RealWorld(app, 'realworld', {
   taskMemory: 512,
   certificateArn: CERTIFICATE_ARN,
   repo: 'realworld',
-  tag: 'v2',
+  tag: 'v0.0.2',
   jwtSecret: RW_JWT_SECRET,
   port: 8000,
   dbPath: RW_DB_PATH,

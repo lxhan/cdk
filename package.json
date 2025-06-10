@@ -16,15 +16,15 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/node": "^22.10.5",
-		"aws-cdk": "2.175.0",
+		"@types/node": "^24.0.0",
+		"aws-cdk": "2.1018.0",
 		"dotenv": "^16.4.7",
 		"tsconfig-paths": "^4.2.0",
-		"tsx": "^4.19.2",
-		"typescript": "~5.7.3"
+		"tsx": "^4.19.4",
+		"typescript": "~5.8.3"
 	},
 	"dependencies": {
-		"aws-cdk-lib": "2.175.0",
+		"aws-cdk-lib": "2.200.1",
 		"constructs": "^10.4.2"
 	}
 }
